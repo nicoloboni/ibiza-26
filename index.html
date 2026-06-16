@@ -118,7 +118,7 @@ a{ color:inherit; text-decoration:none; }
 .h-section{
   font-family:var(--font-display);
   font-size:clamp(2.6rem, 9vw, 6.4rem);
-  line-height:0.84; text-transform:uppercase; letter-spacing:0.004em;
+  line-height:0.94; text-transform:uppercase; letter-spacing:0.004em;
   margin-bottom: clamp(2rem,5vw,3.5rem);
 }
 .h-section .o{ color: var(--coral); }
@@ -157,14 +157,16 @@ a{ color:inherit; text-decoration:none; }
 
 /* ---------------- hero ---------------- */
 .hero{ position:relative; min-height:100svh; display:flex; flex-direction:column; justify-content:flex-end; overflow:hidden; padding-bottom: clamp(2.5rem,6vw,4.5rem); }
+.hero__photo{ position:absolute; inset:0; z-index:0; width:100%; height:100%; object-fit:cover; object-position:center 35%; }
 .hero__sky{
   position:absolute; inset:0; z-index:0;
   background:
-    radial-gradient(120% 80% at 78% 8%, oklch(0.82 0.15 76 / 0.55), transparent 46%),
-    radial-gradient(120% 90% at 92% 22%, oklch(0.72 0.185 39 / 0.7), transparent 52%),
-    radial-gradient(150% 120% at 12% 0%, oklch(0.5 0.16 18 / 0.55), transparent 55%),
-    linear-gradient(178deg, oklch(0.42 0.13 28) 0%, oklch(0.24 0.06 36) 40%, var(--ink) 82%);
+    radial-gradient(110% 75% at 82% 6%, oklch(0.86 0.13 72 / 0.30), transparent 52%),
+    linear-gradient(72deg, oklch(0.11 0.02 38 / 0.88) 0%, oklch(0.12 0.02 40 / 0.34) 38%, transparent 62%),
+    linear-gradient(180deg, oklch(0.14 0.03 36 / 0.28) 0%, transparent 32%, oklch(0.12 0.02 38 / 0.5) 76%, oklch(0.1 0.018 40 / 0.94) 100%);
 }
+.hero__sun{ display:none; }
+.hero__sea{ display:none; }
 .hero__sun{
   position:absolute; top:6%; right:8%; width:min(46vw,520px); aspect-ratio:1; z-index:0;
   border-radius:50%;
@@ -233,7 +235,7 @@ a{ color:inherit; text-decoration:none; }
 /* ---------------- dossier / overview ---------------- */
 .dossier{ display:grid; grid-template-columns: 1.15fr 1fr; gap:clamp(2rem,5vw,4.5rem); align-items:start; }
 @media (max-width:880px){ .dossier{ grid-template-columns:1fr; } }
-.dossier__big{ font-family:var(--font-display); font-size:clamp(2.2rem,5.5vw,4rem); line-height:0.92; text-transform:uppercase; }
+.dossier__big{ font-family:var(--font-display); font-size:clamp(2.2rem,5.5vw,4rem); line-height:1.06; text-transform:uppercase; }
 .dossier__big em{ color:var(--coral); font-style:normal; }
 .dossier__p{ color:var(--muted); margin-top:1.4rem; max-width:48ch; font-size:1.05rem; }
 .arc{ display:flex; flex-direction:column; gap:0; }
@@ -300,7 +302,11 @@ a{ color:inherit; text-decoration:none; }
   --c: var(--coral);
 }
 .night-1{ top:7vh; } .night-2{ top:9vh; } .night-3{ top:11vh; }
-.night__bg{ position:absolute; inset:0; z-index:0; opacity:0.95; }
+.night__photo{ position:absolute; inset:0; z-index:0; width:100%; height:100%; object-fit:cover; }
+.night__bg{ position:absolute; inset:0; z-index:0; background:
+  linear-gradient(180deg, transparent 0%, oklch(0.1 0.02 40 / 0.5) 52%, oklch(0.08 0.018 40 / 0.94) 100%),
+  linear-gradient(95deg, oklch(0.1 0.02 40 / 0.74) 0%, oklch(0.1 0.02 40 / 0.2) 38%, transparent 62%),
+  radial-gradient(80% 55% at 76% 3%, color-mix(in oklch, var(--c) 36%, transparent), transparent 66%); }
 .night__spot{ position:absolute; inset:0; z-index:1; pointer-events:none; opacity:0;
   background:radial-gradient(28% 40% at var(--mx,50%) var(--my,50%), var(--c), transparent 70%);
   mix-blend-mode:soft-light; transition:opacity .5s var(--ease); }
@@ -344,25 +350,9 @@ a{ color:inherit; text-decoration:none; }
 @keyframes fadein{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:none;} }
 
 .night--pacha{ --c:var(--pacha); }
-.night--pacha .night__bg{ background:
-  radial-gradient(120% 90% at 85% 12%, oklch(0.66 0.205 22 / 0.55), transparent 50%),
-  radial-gradient(100% 90% at 10% 100%, oklch(0.4 0.16 18 / 0.5), transparent 55%),
-  linear-gradient(165deg, oklch(0.26 0.07 24), var(--ink)); }
 .night--hi{ --c:var(--hi); }
-.night--hi .night__bg{ background:
-  radial-gradient(120% 90% at 85% 12%, oklch(0.6 0.13 215 / 0.55), transparent 50%),
-  radial-gradient(110% 100% at 5% 95%, oklch(0.45 0.1 250 / 0.5), transparent 55%),
-  linear-gradient(165deg, oklch(0.24 0.05 230), var(--ink)); }
 .night--amnesia{ --c:var(--amnesia); }
-.night--amnesia .night__bg{ background:
-  radial-gradient(120% 90% at 80% 10%, oklch(0.66 0.2 350 / 0.5), transparent 50%),
-  radial-gradient(110% 100% at 8% 100%, oklch(0.55 0.18 320 / 0.45), transparent 55%),
-  linear-gradient(165deg, oklch(0.26 0.07 340), var(--ink)); }
 .night--ushuaia{ --c:var(--ushuaia); }
-.night--ushuaia .night__bg{ background:
-  radial-gradient(120% 95% at 82% 8%, oklch(0.84 0.15 75 / 0.6), transparent 48%),
-  radial-gradient(120% 100% at 10% 100%, oklch(0.62 0.18 40 / 0.5), transparent 55%),
-  linear-gradient(168deg, oklch(0.3 0.09 52), var(--ink)); }
 
 .night__ghost{ position:absolute; right:-2%; bottom:-8%; z-index:1; font-family:var(--font-display); font-size:clamp(8rem,30vw,24rem); line-height:0.7; text-transform:uppercase; color:oklch(0.95 0.01 80 / 0.04); pointer-events:none; white-space:nowrap; }
 
@@ -373,7 +363,7 @@ a{ color:inherit; text-decoration:none; }
 .dine:hover{ border-color:oklch(0.84 0.145 76 / 0.5); transform:translateY(-3px); }
 .dine--hero{ grid-row:span 2; background:linear-gradient(160deg, oklch(0.32 0.09 52), var(--ink)); }
 .dine__rank{ font-family:var(--font-mono); font-size:0.66rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber); }
-.dine__name{ font-family:var(--font-display); font-size:clamp(1.8rem,4.5vw,3.2rem); line-height:0.9; text-transform:uppercase; margin-top:0.6rem; }
+.dine__name{ font-family:var(--font-display); font-size:clamp(1.8rem,4.5vw,3.2rem); line-height:1.0; text-transform:uppercase; margin-top:0.6rem; }
 .dine__desc{ color:var(--muted); margin-top:0.7rem; font-size:0.96rem; max-width:34ch; }
 .dine__link{ margin-top:1.4rem; font-family:var(--font-mono); font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--paper); display:inline-flex; align-items:center; gap:0.5rem; }
 .dine__link svg{ width:13px; height:13px; color:var(--amber); transition:transform .3s var(--ease); }
@@ -386,7 +376,7 @@ a{ color:inherit; text-decoration:none; }
 /* ---------------- base / apartment ---------------- */
 .base{ display:grid; grid-template-columns: 1fr 0.9fr; gap:clamp(2rem,5vw,4rem); align-items:start; }
 @media (max-width:920px){ .base{ grid-template-columns:1fr; } }
-.base__name{ font-family:var(--font-display); font-size:clamp(2.4rem,6vw,4.4rem); line-height:0.88; text-transform:uppercase; }
+.base__name{ font-family:var(--font-display); font-size:clamp(2.4rem,6vw,4.4rem); line-height:0.98; text-transform:uppercase; }
 .base__addr{ font-family:var(--font-mono); font-size:0.82rem; letter-spacing:0.06em; color:var(--muted); margin-top:1rem; }
 .spec{ margin-top:2rem; }
 .spec h4{ font-family:var(--font-mono); font-size:0.66rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--faint); margin-bottom:0.9rem; }
@@ -405,7 +395,9 @@ a{ color:inherit; text-decoration:none; }
 .mapcard__grid{ position:absolute; inset:0; opacity:0.5;
   background-image: linear-gradient(var(--line-2) 1px, transparent 1px), linear-gradient(90deg, var(--line-2) 1px, transparent 1px);
   background-size: 46px 46px; mask-image: radial-gradient(70% 70% at 60% 40%, #000, transparent); }
-.mapcard__pin{ position:absolute; top:38%; left:60%; width:18px; height:18px; }
+.mapcard__photo{ position:absolute; inset:0; z-index:0; width:100%; height:100%; object-fit:cover; }
+.mapcard::after{ content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, oklch(0.1 0.03 240 / 0.2) 0%, oklch(0.08 0.02 240 / 0.8) 100%); }
+.mapcard__pin{ position:absolute; top:42%; left:58%; width:18px; height:18px; z-index:2; }
 .mapcard__pin .core{ position:absolute; inset:0; border-radius:50% 50% 50% 0; transform:rotate(-45deg); background:var(--coral); box-shadow:0 6px 14px oklch(0.1 0.02 40 / 0.6); }
 .mapcard__pin .ring{ position:absolute; left:50%; top:50%; width:18px; height:18px; transform:translate(-50%,-50%); border-radius:50%; border:2px solid var(--coral); animation:ping 2.4s var(--ease) infinite; }
 @keyframes ping{ 0%{ transform:translate(-50%,-50%) scale(1); opacity:0.8;} 100%{ transform:translate(-50%,-50%) scale(4); opacity:0;} }
@@ -623,6 +615,7 @@ a{ color:inherit; text-decoration:none; }
 
 <!-- HERO -->
 <header class="hero" id="top">
+  <img class="hero__photo" src="assets/img/esvedra.jpg" alt="Tramonto a Es Vedrà, Ibiza" aria-hidden="true">
   <div class="hero__sky" aria-hidden="true"></div>
   <div class="hero__sun" data-parallax="0.3" aria-hidden="true"></div>
   <div class="hero__sea" aria-hidden="true"></div>
@@ -770,6 +763,7 @@ a{ color:inherit; text-decoration:none; }
 
     <!-- FRIDAY -->
     <article class="night night-1 night--pacha reveal" data-tilt id="night-fri">
+      <img class="night__photo" id="friPhoto" src="assets/img/pacha.jpg" alt="Pacha Ibiza" loading="lazy">
       <div class="night__bg"></div>
       <div class="night__spot" aria-hidden="true"></div>
       <div class="night__ghost" data-parallax="0.12" data-ghost>FRI</div>
@@ -819,6 +813,7 @@ a{ color:inherit; text-decoration:none; }
 
     <!-- SATURDAY -->
     <article class="night night-2 night--amnesia reveal" data-tilt id="night-sat">
+      <img class="night__photo" src="assets/img/amnesia.jpg" alt="Amnesia Ibiza" loading="lazy">
       <div class="night__bg"></div>
       <div class="night__spot" aria-hidden="true"></div>
       <div class="night__ghost" data-parallax="0.12" data-ghost>SAT</div>
@@ -846,6 +841,7 @@ a{ color:inherit; text-decoration:none; }
 
     <!-- SUNDAY -->
     <article class="night night-3 night--ushuaia reveal" data-tilt id="night-sun">
+      <img class="night__photo" src="assets/img/ushuaia.jpg" alt="Ushuaïa Ibiza" loading="lazy">
       <div class="night__bg"></div>
       <div class="night__spot" aria-hidden="true"></div>
       <div class="night__ghost" data-parallax="0.12" data-ghost>SUN</div>
@@ -953,7 +949,7 @@ a{ color:inherit; text-decoration:none; }
 
       <div>
         <div class="mapcard reveal" data-tilt>
-          <div class="mapcard__grid"></div>
+          <img class="mapcard__photo" src="assets/img/bossa.jpg" alt="Playa d'en Bossa al tramonto" loading="lazy">
           <div class="mapcard__pin"><div class="core"></div><div class="ring"></div></div>
           <div class="mapcard__label">
             <div class="t">Basecamp · Playa d'en Bossa</div>
@@ -1098,6 +1094,9 @@ a{ color:inherit; text-decoration:none; }
     <span>Nico · Pieva · Jonny · Ange · Stefano · Leo</span>
     <span>Made for the crew · See you on the island</span>
   </div>
+  <div class="outro__foot" style="border-top:0; padding-top:0; opacity:0.62; font-size:0.56rem; line-height:1.5;">
+    <span>Foto via Wikimedia Commons — Pacha © Maria marv · Amnesia © Amnesia Ibiza · Ushuaïa © MINIFONT · Hï © Juliamgmt · Es Vedrà © A.Savin · Platja d'en Bossa © UnFUG-Fabi — licenze CC BY / CC BY-SA / FAL / CC0</span>
+  </div>
 </footer>
 
 <!-- ============ libs ============ -->
@@ -1159,6 +1158,8 @@ a{ color:inherit; text-decoration:none; }
         fcard.classList.toggle("night--hi", key === "hi");
         var ghost = fcard.querySelector("[data-ghost]");
         if (ghost) ghost.textContent = (key === "hi") ? "HI" : "FRI";
+        var fp = document.getElementById("friPhoto");
+        if (fp) fp.src = (key === "hi") ? "assets/img/hi.jpg" : "assets/img/pacha.jpg";
         if (hasGSAP && window.ScrollTrigger) ScrollTrigger.refresh();
       });
     });
@@ -1200,19 +1201,22 @@ a{ color:inherit; text-decoration:none; }
       "&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunset" +
       "&timezone=Europe%2FMadrid&start_date=2026-06-19&end_date=2026-06-22";
     function icon(code, size){
-      var s = size || 24, st = '<svg viewBox="0 0 24 24" width="'+s+'" height="'+s+'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">';
-      var sun = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/>';
-      var cloud = '<path d="M6 18a4 4 0 0 1 0-8 5 5 0 0 1 9.6-1.3A3.5 3.5 0 0 1 18 18H6Z"/>';
-      var rain = cloud + '<path d="M9 20l-1 2M13 20l-1 2M17 20l-1 2"/>';
-      var bolt = cloud + '<path d="M12 14l-2 4h3l-2 4"/>';
-      var body = sun;
+      var s = size || 24;
+      var head = '<svg viewBox="0 0 24 24" width="'+s+'" height="'+s+'" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">';
+      var sun = '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4"/>';
+      var cloud = '<path d="M7.3 18.3a4.3 4.3 0 0 1-.5-8.55 5.7 5.7 0 0 1 10.85 1.5A3.6 3.6 0 0 1 17.2 18.3H7.3Z"/>';
+      var partly = '<circle cx="8.5" cy="8" r="2.6"/><path d="M8.5 3.1v1.3M3.1 8h1.3M4.7 4.2l.9.9M12.3 4.2l-.9.9M4.7 11.8l.9-.9"/>'
+                 + '<path d="M9.5 19a4 4 0 0 1-.45-7.96 5.2 5.2 0 0 1 9.85 1.4A3.4 3.4 0 0 1 17.5 19H9.5Z" style="fill:var(--ink)"/>';
+      var cloudHi = '<path d="M7.4 15.2a4 4 0 0 1-.5-7.96 5.4 5.4 0 0 1 10.3 1.4A3.4 3.4 0 0 1 16.8 15.2H7.4Z"/>';
+      var rain = cloudHi + '<path d="M8.6 17.4l-1 2.6M12 17.4l-1 2.6M15.4 17.4l-1 2.6"/>';
+      var bolt = cloudHi + '<path d="M12.4 17l-2.3 3.1h2l-1.5 2.9"/>';
+      var body;
       if (code === 0) body = sun;
-      else if (code === 1 || code === 2) body = sun + cloud;
-      else if (code === 3 || code === 45 || code === 48) body = cloud;
+      else if (code === 1 || code === 2) body = partly;
       else if (code >= 95) body = bolt;
       else if (code >= 51) body = rain;
       else body = cloud;
-      return st + body + '</svg>';
+      return head + body + '</svg>';
     }
     function label(code){
       if (code === 0) return "sereno";

@@ -1646,7 +1646,7 @@ a{ color:inherit; text-decoration:none; }
         .backgroundColor("rgba(0,0,0,0)")
         .width(sz()).height(sz())
         .showAtmosphere(true).atmosphereColor("#d98a66").atmosphereAltitude(0.18)
-        .hexPolygonsData(countries).hexPolygonResolution(3).hexPolygonMargin(0.32).hexPolygonUseDots(true).hexPolygonColor(() => "rgba(212,128,95,0.55)")
+        .polygonsData(countries).polygonCapColor(() => "rgba(150,86,60,0.95)").polygonSideColor(() => "rgba(120,68,46,0.35)").polygonStrokeColor(() => "rgba(228,150,112,0.55)").polygonAltitude(0.01)
         .arcsData([{ startLat: PISA.lat, startLng: PISA.lng, endLat: IBIZA.lat, endLng: IBIZA.lng }])
           .arcColor(() => ["rgba(244,186,150,0.95)", "rgba(217,138,102,0.95)"])
           .arcStroke(0.7).arcAltitude(0.28).arcDashLength(0.5).arcDashGap(0.22).arcDashAnimateTime(2200)

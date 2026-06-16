@@ -269,15 +269,9 @@ a{ color:inherit; text-decoration:none; }
 
 /* ---------------- flights / boarding passes ---------------- */
 .globe-wrap{ display:flex; flex-direction:column; align-items:center; gap:0.9rem; margin-bottom:clamp(2.5rem,6vw,4rem); }
-.globe-box{ width:min(86vw,440px); aspect-ratio:1; max-width:100%; border-radius:50%; overflow:hidden; box-shadow:0 0 0 1px oklch(0.72 0.185 39 / 0.28), inset 0 0 70px oklch(0.04 0.01 40 / 0.8), 0 30px 80px oklch(0.05 0.01 40 / 0.55); }
-.globe-box svg{ width:100%; height:100%; display:block; opacity:0; transition:opacity 1s var(--ease); }
-.globe-box svg.in{ opacity:1; }
-.globe-arc{ fill:none; stroke:#df8e69; stroke-width:1.8; stroke-linecap:round; filter:drop-shadow(0 0 3px rgba(223,142,105,.7)); }
-.globe-dot{ fill:#f2b793; }
-.globe-dot-ring{ fill:none; stroke:#df8e69; stroke-width:1.4; transform-box:fill-box; transform-origin:center; animation:gpulse 2.4s ease-out infinite; }
-@keyframes gpulse{ 0%{ r:3px; opacity:.85; } 100%{ r:14px; opacity:0; } }
-.globe-label{ fill:#f4ede3; font-family:var(--font-mono); font-size:11px; letter-spacing:1.5px; font-weight:700; paint-order:stroke; stroke:#100b07; stroke-width:2.8px; stroke-linejoin:round; }
-@media (prefers-reduced-motion: reduce){ .globe-dot-ring{ animation:none; } }
+.globe-box{ width:min(94vw,500px); aspect-ratio:1; max-width:100%; opacity:0; transition:opacity 1.2s var(--ease); filter:drop-shadow(0 26px 60px oklch(0.05 0.01 40 / 0.5)); }
+.globe-box.in{ opacity:1; }
+.globe-box canvas{ display:block; outline:none; }
 .globe-route{ font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); }
 .globe-route b{ color:var(--coral); }
 .globe-route__arrow{ color:var(--coral); margin:0 0.2rem; }
@@ -1635,42 +1629,35 @@ a{ color:inherit; text-decoration:none; }
 </script>
 
 <script type="module">
-  /* Globe (D3 orthographic) — zoomed on the Pisa → Ibiza route, with labels + flight arc */
+  /* Real 3D globe (globe.gl / Three.js) — Pisa → Ibiza, on-brand dark + coral */
   try {
-    const d3 = await import("https://cdn.jsdelivr.net/npm/d3-geo@3/+esm");
+    const Globe = (await import("https://esm.sh/globe.gl@2")).default;
     const topo = await import("https://cdn.jsdelivr.net/npm/topojson-client@3/+esm");
     const box = document.getElementById("globe");
-    if (box) {
+    if (box && Globe) {
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
       const world = await fetch("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then((r) => r.json());
-      const land = topo.feature(world, world.objects.countries);
-      const W = 440, PISA = [10.39, 43.68], IBIZA = [1.37, 38.87];
-      const proj = d3.geoOrthographic().scale(520).translate([W / 2, W / 2]).rotate([-5.9, -41.3, 0]).clipAngle(90);
-      const path = d3.geoPath(proj);
-      const p = proj(PISA), i = proj(IBIZA);
-      const cx = (p[0] + i[0]) / 2, cy = (p[1] + i[1]) / 2 - Math.hypot(i[0] - p[0], i[1] - p[1]) * 0.62;
-      const arcD = "M" + p[0].toFixed(1) + "," + p[1].toFixed(1) + " Q" + cx.toFixed(1) + "," + cy.toFixed(1) + " " + i[0].toFixed(1) + "," + i[1].toFixed(1);
-      const f1 = (n) => n.toFixed(1);
-      box.innerHTML =
-        '<svg viewBox="0 0 ' + W + ' ' + W + '" xmlns="http://www.w3.org/2000/svg">' +
-          '<defs><radialGradient id="gOcean" cx="42%" cy="36%" r="80%">' +
-            '<stop offset="0%" stop-color="#2c2218"/><stop offset="66%" stop-color="#15100b"/><stop offset="100%" stop-color="#0b0805"/>' +
-          '</radialGradient></defs>' +
-          '<path d="' + path({ type: "Sphere" }) + '" fill="url(#gOcean)" stroke="#d98a66" stroke-opacity="0.3" stroke-width="1"/>' +
-          '<path d="' + path(d3.geoGraticule10()) + '" fill="none" stroke="#e0a070" stroke-opacity="0.09" stroke-width="0.5"/>' +
-          '<path d="' + path(land) + '" fill="#4c3a2b" fill-opacity="0.92" stroke="#7d5e44" stroke-opacity="0.55" stroke-width="0.45"/>' +
-          '<path d="' + arcD + '" class="globe-arc"/>' +
-          '<path d="M3.8,0 L-2.8,2.6 L-1,0 L-2.8,-2.6 Z" fill="#f6efe6" style="filter:drop-shadow(0 0 3px rgba(217,138,102,.95))">' +
-            '<animateMotion dur="3.6s" repeatCount="indefinite" rotate="auto" path="' + arcD + '"/>' +
-          '</path>' +
-          '<circle class="globe-dot-ring" cx="' + f1(p[0]) + '" cy="' + f1(p[1]) + '" r="3"/>' +
-          '<circle class="globe-dot-ring" cx="' + f1(i[0]) + '" cy="' + f1(i[1]) + '" r="3"/>' +
-          '<circle class="globe-dot" cx="' + f1(p[0]) + '" cy="' + f1(p[1]) + '" r="3.6"/>' +
-          '<circle class="globe-dot" cx="' + f1(i[0]) + '" cy="' + f1(i[1]) + '" r="3.6"/>' +
-          '<text class="globe-label" x="' + f1(p[0] + 10) + '" y="' + f1(p[1] - 7) + '">PISA</text>' +
-          '<text class="globe-label" x="' + f1(i[0] - 10) + '" y="' + f1(i[1] + 18) + '" text-anchor="end">IBIZA</text>' +
-        '</svg>';
-      const svg = box.querySelector("svg");
-      requestAnimationFrame(() => { if (svg) svg.classList.add("in"); });
+      const countries = topo.feature(world, world.objects.countries).features;
+      const PISA = { lat: 43.68, lng: 10.39, text: "PISA" };
+      const IBIZA = { lat: 38.87, lng: 1.37, text: "IBIZA" };
+      const sz = () => Math.round(box.clientWidth) || 420;
+      const g = Globe()(box)
+        .backgroundColor("rgba(0,0,0,0)")
+        .width(sz()).height(sz())
+        .showAtmosphere(true).atmosphereColor("#d98a66").atmosphereAltitude(0.18)
+        .hexPolygonsData(countries).hexPolygonResolution(3).hexPolygonMargin(0.32).hexPolygonUseDots(true).hexPolygonColor(() => "rgba(212,128,95,0.55)")
+        .arcsData([{ startLat: PISA.lat, startLng: PISA.lng, endLat: IBIZA.lat, endLng: IBIZA.lng }])
+          .arcColor(() => ["rgba(244,186,150,0.95)", "rgba(217,138,102,0.95)"])
+          .arcStroke(0.7).arcAltitude(0.28).arcDashLength(0.5).arcDashGap(0.22).arcDashAnimateTime(2200)
+        .pointsData([PISA, IBIZA]).pointColor(() => "#f4ba96").pointAltitude(0.012).pointRadius(0.5).pointResolution(20)
+        .labelsData([PISA, IBIZA]).labelText("text").labelLat("lat").labelLng("lng")
+          .labelColor(() => "#f5efe5").labelSize(1.6).labelDotRadius(0.42).labelResolution(2).labelAltitude(0.02);
+      try { const m = g.globeMaterial(); m.color.set("#15100b"); if (m.emissive) m.emissive.set("#1d140d"); m.shininess = 3; } catch (_) {}
+      g.pointOfView({ lat: 41, lng: 6, altitude: 0.82 }, 0);
+      const ctrl = g.controls();
+      if (ctrl) { ctrl.enableZoom = false; ctrl.enablePan = false; ctrl.autoRotate = !reduce; ctrl.autoRotateSpeed = 0.16; ctrl.minPolarAngle = 0.4; ctrl.maxPolarAngle = 2.4; }
+      addEventListener("resize", () => { g.width(sz()).height(sz()); });
+      requestAnimationFrame(() => box.classList.add("in"));
     }
   } catch (e) {
     const b = document.getElementById("globe"); if (b && b.closest(".globe-wrap")) b.closest(".globe-wrap").style.display = "none";

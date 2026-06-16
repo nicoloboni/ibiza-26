@@ -268,6 +268,11 @@ a{ color:inherit; text-decoration:none; }
 @keyframes shimmer{ 0%{ background-position:100% 0;} 100%{ background-position:-100% 0;} }
 
 /* ---------------- flights / boarding passes ---------------- */
+.globe-wrap{ display:flex; flex-direction:column; align-items:center; gap:0.9rem; margin-bottom:clamp(2.5rem,6vw,4rem); }
+.globe-wrap canvas{ width:min(80vw,400px); height:min(80vw,400px); aspect-ratio:1; max-width:100%; contain:layout paint size; opacity:0; transition:opacity 1s var(--ease); cursor:grab; touch-action:none; }
+.globe-route{ font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); }
+.globe-route b{ color:var(--coral); }
+.globe-route__arrow{ color:var(--coral); margin:0 0.2rem; }
 .passes{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(1.2rem,3vw,2rem); }
 @media (max-width:760px){ .passes{ grid-template-columns:1fr; } }
 .pass{
@@ -769,6 +774,10 @@ a{ color:inherit; text-decoration:none; }
   <div class="wrap">
     <div class="eyebrow-row reveal"><span class="kicker"><span class="dot">03</span> · I voli</span><span class="rule"></span></div>
     <h2 class="h-section reveal">D<span class="o">e</span>colla.</h2>
+    <div class="globe-wrap reveal">
+      <canvas id="globe" aria-label="Globo 3D con la rotta Pisa → Ibiza"></canvas>
+      <p class="globe-route"><b>PSA</b> Pisa <span class="globe-route__arrow">→</span> <b>IBZ</b> Ibiza · 1h 50m</p>
+    </div>
     <div class="passes">
       <div class="pass reveal" data-tilt>
         <div class="pass__head"><span class="air">RYANAIR · ANDATA</span><span class="lbl">Ven 19 Giu</span></div>
@@ -1621,6 +1630,58 @@ a{ color:inherit; text-decoration:none; }
   setProgress();
   window.addEventListener("load", function(){ ScrollTrigger.refresh(); });
 })();
+</script>
+
+<script type="module">
+  /* 3D globe (cobe) — Pisa → Ibiza route */
+  try {
+    const createGlobe = (await import("https://cdn.jsdelivr.net/npm/cobe@0.6.3/+esm")).default;
+    const canvas = document.getElementById("globe");
+    if (canvas && createGlobe) {
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let width = 0, phi = 1.5, theta = 0.72, basePhi = 1.5, t = 0, drag = null;
+      const onResize = () => { width = canvas.offsetWidth; };
+      addEventListener("resize", onResize); onResize();
+      canvas.addEventListener("pointerdown", (e) => { drag = { x: e.clientX, y: e.clientY, phi, theta }; canvas.style.cursor = "grabbing"; try { canvas.setPointerCapture(e.pointerId); } catch (_) {} });
+      canvas.addEventListener("pointermove", (e) => { if (!drag) return; phi = drag.phi + (e.clientX - drag.x) / 220; theta = Math.max(-0.5, Math.min(0.9, drag.theta - (e.clientY - drag.y) / 320)); });
+      const end = () => { if (drag) basePhi = phi; drag = null; canvas.style.cursor = "grab"; };
+      canvas.addEventListener("pointerup", end);
+      canvas.addEventListener("pointerleave", end);
+      const PISA = [43.68, 10.39], IBIZA = [38.87, 1.37];
+      const toR = (d) => d * Math.PI / 180, toD = (r) => r * 180 / Math.PI;
+      const greatCircle = (a, b, n) => {
+        const v = (p) => { const la = toR(p[0]), lo = toR(p[1]); return [Math.cos(la)*Math.cos(lo), Math.cos(la)*Math.sin(lo), Math.sin(la)]; };
+        const v1 = v(a), v2 = v(b);
+        const dot = Math.max(-1, Math.min(1, v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2]));
+        const om = Math.acos(dot) || 1e-6, out = [];
+        for (let i = 1; i < n; i++) {
+          const f = i / n, s1 = Math.sin((1 - f) * om) / Math.sin(om), s2 = Math.sin(f * om) / Math.sin(om);
+          const x = s1*v1[0] + s2*v2[0], y = s1*v1[1] + s2*v2[1], z = s1*v1[2] + s2*v2[2];
+          out.push([toD(Math.atan2(z, Math.hypot(x, y))), toD(Math.atan2(y, x))]);
+        }
+        return out;
+      };
+      const routeMarkers = greatCircle(PISA, IBIZA, 10).map((loc) => ({ location: loc, size: 0.05 }));
+      createGlobe(canvas, {
+        devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+        width: width * 2, height: width * 2,
+        phi, theta, dark: 1, diffuse: 1.2,
+        mapSamples: 16000, mapBrightness: 5,
+        baseColor: [0.42, 0.33, 0.28],
+        markerColor: [0.96, 0.55, 0.4],
+        glowColor: [0.26, 0.17, 0.12],
+        markers: [ { location: PISA, size: 0.13 }, { location: IBIZA, size: 0.13 } ].concat(routeMarkers),
+        onRender: (state) => {
+          if (!drag && !reduce) { t += 1; phi = basePhi + 0.22 * Math.sin(t * 0.004); }
+          state.phi = phi; state.theta = theta;
+          state.width = width * 2; state.height = width * 2;
+        },
+      });
+      requestAnimationFrame(() => { canvas.style.opacity = "1"; });
+    }
+  } catch (e) {
+    const c = document.getElementById("globe"); if (c) c.closest(".globe-wrap").style.display = "none";
+  }
 </script>
 </body>
 </html>

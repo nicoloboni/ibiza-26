@@ -269,7 +269,15 @@ a{ color:inherit; text-decoration:none; }
 
 /* ---------------- flights / boarding passes ---------------- */
 .globe-wrap{ display:flex; flex-direction:column; align-items:center; gap:0.9rem; margin-bottom:clamp(2.5rem,6vw,4rem); }
-.globe-wrap canvas{ width:min(80vw,400px); height:min(80vw,400px); aspect-ratio:1; max-width:100%; contain:layout paint size; opacity:0; transition:opacity 1s var(--ease); cursor:grab; touch-action:none; }
+.globe-box{ width:min(86vw,440px); aspect-ratio:1; max-width:100%; border-radius:50%; overflow:hidden; box-shadow:0 0 0 1px oklch(0.72 0.185 39 / 0.28), inset 0 0 70px oklch(0.04 0.01 40 / 0.8), 0 30px 80px oklch(0.05 0.01 40 / 0.55); }
+.globe-box svg{ width:100%; height:100%; display:block; opacity:0; transition:opacity 1s var(--ease); }
+.globe-box svg.in{ opacity:1; }
+.globe-arc{ fill:none; stroke:#df8e69; stroke-width:1.8; stroke-linecap:round; filter:drop-shadow(0 0 3px rgba(223,142,105,.7)); }
+.globe-dot{ fill:#f2b793; }
+.globe-dot-ring{ fill:none; stroke:#df8e69; stroke-width:1.4; transform-box:fill-box; transform-origin:center; animation:gpulse 2.4s ease-out infinite; }
+@keyframes gpulse{ 0%{ r:3px; opacity:.85; } 100%{ r:14px; opacity:0; } }
+.globe-label{ fill:#f4ede3; font-family:var(--font-mono); font-size:11px; letter-spacing:1.5px; font-weight:700; paint-order:stroke; stroke:#100b07; stroke-width:2.8px; stroke-linejoin:round; }
+@media (prefers-reduced-motion: reduce){ .globe-dot-ring{ animation:none; } }
 .globe-route{ font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); }
 .globe-route b{ color:var(--coral); }
 .globe-route__arrow{ color:var(--coral); margin:0 0.2rem; }
@@ -736,7 +744,7 @@ a{ color:inherit; text-decoration:none; }
       <p class="dossier__p reveal">Atterraggio alle 18:30, motorini ritirati in aeroporto, check-in alla base di Playa d'en Bossa. Da lì in poi è tutto a un km: spiaggia di giorno, le tre notti più grandi dell'isola al calar del sole. Questa pagina è la mappa completa: voli, lineup, cene e tutto quello che serve sapere.</p>
     </div>
     <div class="arc reveal">
-      <div class="arc__row"><span class="ph">VEN 19</span><span class="ti">Atterraggio + base<small>18:30 · check-in + spiaggia · Pacha / Hï</small></span><span class="tag">Notte 1</span></div>
+      <div class="arc__row"><span class="ph">VEN 19</span><span class="ti">Atterraggio + base<small>18:00 · check-in + spiaggia · Pacha / Hï</small></span><span class="tag">Notte 1</span></div>
       <div class="arc__row"><span class="ph">SAB 20</span><span class="ti">Giornata in spiaggia<small>relax · cena · Amnesia</small></span><span class="tag">Notte 2</span></div>
       <div class="arc__row"><span class="ph">DOM 21</span><span class="ti">Ushuaïa al tramonto<small>J Balvin + DJ Snake</small></span><span class="tag">Notte 3</span></div>
       <div class="arc__row"><span class="ph">LUN 22</span><span class="ti">Volo di ritorno<small>08:00 · Ibiza → Pisa</small></span><span class="tag">Rientro</span></div>
@@ -775,8 +783,8 @@ a{ color:inherit; text-decoration:none; }
     <div class="eyebrow-row reveal"><span class="kicker"><span class="dot">03</span> · I voli</span><span class="rule"></span></div>
     <h2 class="h-section reveal">D<span class="o">e</span>colla.</h2>
     <div class="globe-wrap reveal">
-      <canvas id="globe" aria-label="Globo 3D con la rotta Pisa → Ibiza"></canvas>
-      <p class="globe-route"><b>PSA</b> Pisa <span class="globe-route__arrow">→</span> <b>IBZ</b> Ibiza · 1h 50m</p>
+      <div id="globe" class="globe-box" role="img" aria-label="Globo con la rotta aerea Pisa → Ibiza"></div>
+      <p class="globe-route"><b>PSA</b> Pisa <span class="globe-route__arrow">→</span> <b>IBZ</b> Ibiza · 1h 20m</p>
     </div>
     <div class="passes">
       <div class="pass reveal" data-tilt>
@@ -785,9 +793,9 @@ a{ color:inherit; text-decoration:none; }
           <div class="pass__node"><div class="code">PSA</div><div class="city">Pisa</div><div class="time">16:40</div></div>
           <div class="pass__plane">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12h17M19 12l-4-4M19 12l-4 4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21.5" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg>
-            <span class="dur">1h 50m</span>
+            <span class="dur">1h 20m</span>
           </div>
-          <div class="pass__node r"><div class="code">IBZ</div><div class="city">Ibiza</div><div class="time">18:30</div></div>
+          <div class="pass__node r"><div class="code">IBZ</div><div class="city">Ibiza</div><div class="time">18:00</div></div>
         </div>
         <div class="pass__foot"><span>Volo diretto</span><span>Hand luggage</span></div>
       </div>
@@ -1098,7 +1106,7 @@ a{ color:inherit; text-decoration:none; }
         <img class="member__img" src="assets/crew/nico.jpg" alt="Nico" onerror="this.classList.add('missing')">
         <div class="member__ph"><span>NB</span><span class="add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg> Foto</span></div>
         <button class="member__remove" title="Rimuovi foto" aria-label="Rimuovi foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"/></svg></button>
-        <figcaption class="member__cap"><span class="nm">Nico</span><span class="ro">Capo missione</span></figcaption>
+        <figcaption class="member__cap"><span class="nm">Nico</span><span class="ro">Crew</span></figcaption>
       </figure>
       <figure class="member reveal" data-tilt data-member="pieva">
         <img class="member__img" src="assets/crew/pieva.jpg" alt="Pieva" onerror="this.classList.add('missing')">
@@ -1567,12 +1575,6 @@ a{ color:inherit; text-decoration:none; }
       scrollTrigger: { trigger: el.closest("section, header, article") || el, start: "top bottom", end: "bottom top", scrub: true } });
   });
 
-  /* night poster depth */
-  gsap.utils.toArray(".night").forEach(function(n){
-    gsap.fromTo(n, { filter: "brightness(1)" }, { filter: "brightness(0.55)", ease: "none",
-      scrollTrigger: { trigger: n, start: "top top", end: "bottom top", scrub: true } });
-  });
-
   /* marquee velocity skew */
   var skewSetter = gsap.quickSetter(".marquee__inner", "skewX", "deg");
   var clamp = gsap.utils.clamp(-14, 14);
@@ -1633,54 +1635,45 @@ a{ color:inherit; text-decoration:none; }
 </script>
 
 <script type="module">
-  /* 3D globe (cobe) — Pisa → Ibiza route */
+  /* Globe (D3 orthographic) — zoomed on the Pisa → Ibiza route, with labels + flight arc */
   try {
-    const createGlobe = (await import("https://cdn.jsdelivr.net/npm/cobe@0.6.3/+esm")).default;
-    const canvas = document.getElementById("globe");
-    if (canvas && createGlobe) {
-      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      let width = 0, phi = 1.5, theta = 0.72, basePhi = 1.5, t = 0, drag = null;
-      const onResize = () => { width = canvas.offsetWidth; };
-      addEventListener("resize", onResize); onResize();
-      canvas.addEventListener("pointerdown", (e) => { drag = { x: e.clientX, y: e.clientY, phi, theta }; canvas.style.cursor = "grabbing"; try { canvas.setPointerCapture(e.pointerId); } catch (_) {} });
-      canvas.addEventListener("pointermove", (e) => { if (!drag) return; phi = drag.phi + (e.clientX - drag.x) / 220; theta = Math.max(-0.5, Math.min(0.9, drag.theta - (e.clientY - drag.y) / 320)); });
-      const end = () => { if (drag) basePhi = phi; drag = null; canvas.style.cursor = "grab"; };
-      canvas.addEventListener("pointerup", end);
-      canvas.addEventListener("pointerleave", end);
-      const PISA = [43.68, 10.39], IBIZA = [38.87, 1.37];
-      const toR = (d) => d * Math.PI / 180, toD = (r) => r * 180 / Math.PI;
-      const greatCircle = (a, b, n) => {
-        const v = (p) => { const la = toR(p[0]), lo = toR(p[1]); return [Math.cos(la)*Math.cos(lo), Math.cos(la)*Math.sin(lo), Math.sin(la)]; };
-        const v1 = v(a), v2 = v(b);
-        const dot = Math.max(-1, Math.min(1, v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2]));
-        const om = Math.acos(dot) || 1e-6, out = [];
-        for (let i = 1; i < n; i++) {
-          const f = i / n, s1 = Math.sin((1 - f) * om) / Math.sin(om), s2 = Math.sin(f * om) / Math.sin(om);
-          const x = s1*v1[0] + s2*v2[0], y = s1*v1[1] + s2*v2[1], z = s1*v1[2] + s2*v2[2];
-          out.push([toD(Math.atan2(z, Math.hypot(x, y))), toD(Math.atan2(y, x))]);
-        }
-        return out;
-      };
-      const routeMarkers = greatCircle(PISA, IBIZA, 10).map((loc) => ({ location: loc, size: 0.05 }));
-      createGlobe(canvas, {
-        devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
-        width: width * 2, height: width * 2,
-        phi, theta, dark: 1, diffuse: 1.2,
-        mapSamples: 16000, mapBrightness: 5,
-        baseColor: [0.42, 0.33, 0.28],
-        markerColor: [0.96, 0.55, 0.4],
-        glowColor: [0.26, 0.17, 0.12],
-        markers: [ { location: PISA, size: 0.13 }, { location: IBIZA, size: 0.13 } ].concat(routeMarkers),
-        onRender: (state) => {
-          if (!drag && !reduce) { t += 1; phi = basePhi + 0.22 * Math.sin(t * 0.004); }
-          state.phi = phi; state.theta = theta;
-          state.width = width * 2; state.height = width * 2;
-        },
-      });
-      requestAnimationFrame(() => { canvas.style.opacity = "1"; });
+    const d3 = await import("https://cdn.jsdelivr.net/npm/d3-geo@3/+esm");
+    const topo = await import("https://cdn.jsdelivr.net/npm/topojson-client@3/+esm");
+    const box = document.getElementById("globe");
+    if (box) {
+      const world = await fetch("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then((r) => r.json());
+      const land = topo.feature(world, world.objects.countries);
+      const W = 440, PISA = [10.39, 43.68], IBIZA = [1.37, 38.87];
+      const proj = d3.geoOrthographic().scale(520).translate([W / 2, W / 2]).rotate([-5.9, -41.3, 0]).clipAngle(90);
+      const path = d3.geoPath(proj);
+      const p = proj(PISA), i = proj(IBIZA);
+      const cx = (p[0] + i[0]) / 2, cy = (p[1] + i[1]) / 2 - Math.hypot(i[0] - p[0], i[1] - p[1]) * 0.62;
+      const arcD = "M" + p[0].toFixed(1) + "," + p[1].toFixed(1) + " Q" + cx.toFixed(1) + "," + cy.toFixed(1) + " " + i[0].toFixed(1) + "," + i[1].toFixed(1);
+      const f1 = (n) => n.toFixed(1);
+      box.innerHTML =
+        '<svg viewBox="0 0 ' + W + ' ' + W + '" xmlns="http://www.w3.org/2000/svg">' +
+          '<defs><radialGradient id="gOcean" cx="42%" cy="36%" r="80%">' +
+            '<stop offset="0%" stop-color="#2c2218"/><stop offset="66%" stop-color="#15100b"/><stop offset="100%" stop-color="#0b0805"/>' +
+          '</radialGradient></defs>' +
+          '<path d="' + path({ type: "Sphere" }) + '" fill="url(#gOcean)" stroke="#d98a66" stroke-opacity="0.3" stroke-width="1"/>' +
+          '<path d="' + path(d3.geoGraticule10()) + '" fill="none" stroke="#e0a070" stroke-opacity="0.09" stroke-width="0.5"/>' +
+          '<path d="' + path(land) + '" fill="#4c3a2b" fill-opacity="0.92" stroke="#7d5e44" stroke-opacity="0.55" stroke-width="0.45"/>' +
+          '<path d="' + arcD + '" class="globe-arc"/>' +
+          '<path d="M3.8,0 L-2.8,2.6 L-1,0 L-2.8,-2.6 Z" fill="#f6efe6" style="filter:drop-shadow(0 0 3px rgba(217,138,102,.95))">' +
+            '<animateMotion dur="3.6s" repeatCount="indefinite" rotate="auto" path="' + arcD + '"/>' +
+          '</path>' +
+          '<circle class="globe-dot-ring" cx="' + f1(p[0]) + '" cy="' + f1(p[1]) + '" r="3"/>' +
+          '<circle class="globe-dot-ring" cx="' + f1(i[0]) + '" cy="' + f1(i[1]) + '" r="3"/>' +
+          '<circle class="globe-dot" cx="' + f1(p[0]) + '" cy="' + f1(p[1]) + '" r="3.6"/>' +
+          '<circle class="globe-dot" cx="' + f1(i[0]) + '" cy="' + f1(i[1]) + '" r="3.6"/>' +
+          '<text class="globe-label" x="' + f1(p[0] + 10) + '" y="' + f1(p[1] - 7) + '">PISA</text>' +
+          '<text class="globe-label" x="' + f1(i[0] - 10) + '" y="' + f1(i[1] + 18) + '" text-anchor="end">IBIZA</text>' +
+        '</svg>';
+      const svg = box.querySelector("svg");
+      requestAnimationFrame(() => { if (svg) svg.classList.add("in"); });
     }
   } catch (e) {
-    const c = document.getElementById("globe"); if (c) c.closest(".globe-wrap").style.display = "none";
+    const b = document.getElementById("globe"); if (b && b.closest(".globe-wrap")) b.closest(".globe-wrap").style.display = "none";
   }
 </script>
 </body>

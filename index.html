@@ -318,7 +318,7 @@ a{ color:inherit; text-decoration:none; }
 .night__day b{ color:var(--c); }
 .night__club{ font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.26em; text-transform:uppercase; color:var(--paper); border:1px solid oklch(0.95 0.01 80 / 0.3); border-radius:99px; padding:0.3rem 0.8rem; }
 .night__mid{ margin-top:auto; }
-.night__venue{ font-family:var(--font-display); font-size:clamp(2.6rem,9vw,6.4rem); line-height:0.98; text-transform:uppercase; margin-top:0.12em; }
+.night__venue{ font-family:var(--font-display); font-size:clamp(2.6rem,9vw,6.4rem); line-height:0.98; text-transform:uppercase; margin-top:0.12em; letter-spacing:0.03em; }
 .night__artist{ font-family:var(--font-text); font-weight:700; font-size:clamp(1.3rem,3.6vw,2.2rem); margin-top:0.4rem; letter-spacing:-0.01em; }
 .night__party{ display:inline-block; font-family:var(--font-mono); font-size:0.74rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--c); margin-top:0.7rem; }
 .night__bottom{ margin-top:clamp(1.4rem,3vw,2.2rem); display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:1.4rem; }
@@ -435,7 +435,9 @@ a{ color:inherit; text-decoration:none; }
 @media (max-width:560px){ .crew{ grid-template-columns:repeat(2,1fr); } }
 .member{ position:relative; aspect-ratio:3/4; border-radius:8px; overflow:hidden; border:1px solid var(--line); background:linear-gradient(160deg, var(--ink-2), var(--ink-1)); will-change:transform; cursor:pointer; }
 .member.is-drop{ border-color:var(--coral); box-shadow:0 0 0 3px oklch(0.72 0.185 39 / 0.25) inset; }
-.member__img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:2; transition:transform .6s var(--ease); }
+.member__img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 28%; z-index:2; transition:transform .6s var(--ease); }
+.member[data-member="stefano"] .member__img{ object-position:center 16%; }
+.member[data-member="leo"] .member__img{ object-position:center 6%; }
 .member__img.missing{ display:none; }
 .member:hover .member__img{ transform:scale(1.05); }
 .member__ph{ position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.6rem; }
@@ -511,6 +513,25 @@ a{ color:inherit; text-decoration:none; }
 }
 .no-gsap .reveal{ opacity:1; transform:none; }
 .no-gsap .preloader{ display:none; }
+
+/* ---------------- audio player ---------------- */
+.audio-btn{ position:fixed; right:1.1rem; bottom:1.1rem; z-index:115; display:inline-flex; align-items:center; gap:0.6rem; padding:0.6rem 0.95rem; border-radius:99px; border:1px solid var(--line); background:oklch(0.16 0.02 50 / 0.82); backdrop-filter:blur(10px); color:var(--paper); cursor:pointer; font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase; transition:border-color .3s var(--ease), transform .3s var(--ease); }
+.audio-btn:hover{ border-color:var(--coral); transform:translateY(-2px); }
+.audio-eq{ display:inline-flex; align-items:flex-end; gap:2px; height:14px; }
+.audio-eq i{ width:3px; height:4px; background:var(--coral); border-radius:1px; opacity:0.55; }
+.audio-btn.playing .audio-eq i{ opacity:1; animation:eq 0.9s ease-in-out infinite; }
+.audio-btn.playing .audio-eq i:nth-child(2){ animation-delay:.15s; }
+.audio-btn.playing .audio-eq i:nth-child(3){ animation-delay:.30s; }
+.audio-btn.playing .audio-eq i:nth-child(4){ animation-delay:.45s; }
+@keyframes eq{ 0%,100%{ height:4px; } 50%{ height:14px; } }
+.audio-alert{ position:fixed; left:50%; bottom:1.3rem; transform:translateX(-50%) translateY(180%); z-index:116; display:flex; align-items:center; gap:0.7rem; padding:0.65rem 0.7rem 0.65rem 1rem; border-radius:99px; border:1px solid var(--line); background:oklch(0.2 0.03 36 / 0.92); backdrop-filter:blur(12px); color:var(--paper); font-family:var(--font-mono); font-size:0.7rem; letter-spacing:0.06em; opacity:0; transition:transform .55s var(--ease), opacity .45s var(--ease); pointer-events:none; max-width:calc(100vw - 2rem); }
+.audio-alert.show{ transform:translateX(-50%) translateY(0); opacity:1; pointer-events:auto; }
+.audio-alert__ic{ color:var(--coral); display:flex; flex:none; }
+.audio-alert__ic svg{ width:18px; height:18px; }
+.audio-alert__x{ border:0; background:oklch(0.95 0.01 80 / 0.12); color:var(--paper); width:24px; height:24px; border-radius:50%; cursor:pointer; font-size:1rem; line-height:1; flex:none; transition:background .25s var(--ease); }
+.audio-alert__x:hover{ background:var(--coral); color:var(--ink); }
+@media (max-width:760px){ .audio-btn__txt{ display:none; } .audio-btn{ right:0.9rem; bottom:0.9rem; } }
+@media (prefers-reduced-motion: reduce){ .audio-btn.playing .audio-eq i{ animation:none; height:10px; } }
 
 /* ---------------- mobile menu (hamburger) ---------------- */
 .nav__burger{ display:none; flex-direction:column; gap:5px; width:40px; height:40px; align-items:center; justify-content:center; background:transparent; border:0; cursor:pointer; z-index:111; }
@@ -1149,6 +1170,18 @@ a{ color:inherit; text-decoration:none; }
   </div>
 </footer>
 
+<!-- AUDIO -->
+<audio id="bgm" loop preload="auto" src="assets/audio/track.mp3"></audio>
+<button class="audio-btn" id="audioBtn" aria-label="Attiva o disattiva la musica" aria-pressed="false">
+  <span class="audio-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  <span class="audio-btn__txt">Musica</span>
+</button>
+<div class="audio-alert" id="audioAlert" role="status">
+  <span class="audio-alert__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M11 5 6 9H3v6h3l5 4V5Z" stroke-linejoin="round"/><path d="M15.5 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" stroke-linecap="round"/></svg></span>
+  <span class="audio-alert__txt">Tocca per accendere la musica</span>
+  <button class="audio-alert__x" id="audioAlertX" aria-label="Silenzia">&times;</button>
+</div>
+
 <!-- ============ libs ============ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -1402,6 +1435,30 @@ a{ color:inherit; text-decoration:none; }
     }, { rootMargin: "-45% 0px -45% 0px" });
     ["top","voli","notti","cena","base","ibiza","crew"].forEach(function(id){
       var s = document.getElementById(id); if (s) io.observe(s);
+    });
+  })();
+
+  /* ---- AUDIO (autoplay-blocked aware) ---- */
+  (function(){
+    var bgm = document.getElementById("bgm");
+    var btn = document.getElementById("audioBtn");
+    var alertEl = document.getElementById("audioAlert");
+    var alertX = document.getElementById("audioAlertX");
+    if (!bgm || !btn) return;
+    bgm.volume = 0.55;
+    var decided = false, txt = btn.querySelector(".audio-btn__txt");
+    function setUI(p){ btn.classList.toggle("playing", p); btn.setAttribute("aria-pressed", p ? "true" : "false"); if (txt) txt.textContent = p ? "Musica" : "Off"; }
+    function showAlert(m){ if(!alertEl) return; var t=alertEl.querySelector(".audio-alert__txt"); if(t) t.textContent=m; alertEl.classList.add("show"); }
+    function hideAlert(){ if(alertEl) alertEl.classList.remove("show"); }
+    function play(){ return bgm.play().then(function(){ setUI(true); }); }
+    btn.addEventListener("click", function(e){ e.stopPropagation(); decided=true; hideAlert(); if(bgm.paused){ play().catch(function(){}); } else { bgm.pause(); setUI(false); } });
+    if (alertX) alertX.addEventListener("click", function(e){ e.stopPropagation(); decided=true; bgm.pause(); setUI(false); hideAlert(); });
+    if (alertEl) alertEl.addEventListener("click", function(){ decided=true; play().catch(function(){}); hideAlert(); });
+    play().then(function(){ showAlert("Musica attiva · DANCE"); setTimeout(hideAlert, 4500); }).catch(function(){
+      showAlert("Tocca per accendere la musica");
+      var go = function(){ if(!decided){ play().then(function(){ showAlert("Musica attiva · DANCE"); setTimeout(hideAlert, 3500); }).catch(function(){}); } clean(); };
+      var clean = function(){ ["pointerdown","keydown","touchstart"].forEach(function(ev){ document.removeEventListener(ev, go, true); }); };
+      ["pointerdown","keydown","touchstart"].forEach(function(ev){ document.addEventListener(ev, go, true); });
     });
   })();
 

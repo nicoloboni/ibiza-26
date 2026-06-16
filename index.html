@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preconnect" href="https://api.open-meteo.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
 <style>
 /* ============================================================
@@ -118,7 +119,7 @@ a{ color:inherit; text-decoration:none; }
 .h-section{
   font-family:var(--font-display);
   font-size:clamp(2.6rem, 9vw, 6.4rem);
-  line-height:0.94; text-transform:uppercase; letter-spacing:0.004em;
+  line-height:1.04; text-transform:uppercase; letter-spacing:0.01em; word-spacing:0.04em;
   margin-bottom: clamp(2rem,5vw,3.5rem);
 }
 .h-section .o{ color: var(--coral); }
@@ -395,11 +396,15 @@ a{ color:inherit; text-decoration:none; }
 .mapcard__grid{ position:absolute; inset:0; opacity:0.5;
   background-image: linear-gradient(var(--line-2) 1px, transparent 1px), linear-gradient(90deg, var(--line-2) 1px, transparent 1px);
   background-size: 46px 46px; mask-image: radial-gradient(70% 70% at 60% 40%, #000, transparent); }
-.mapcard__photo{ position:absolute; inset:0; z-index:0; width:100%; height:100%; object-fit:cover; }
-.mapcard::after{ content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, oklch(0.1 0.03 240 / 0.2) 0%, oklch(0.08 0.02 240 / 0.8) 100%); }
-.mapcard__pin{ position:absolute; top:42%; left:58%; width:18px; height:18px; z-index:2; }
-.mapcard__pin .core{ position:absolute; inset:0; border-radius:50% 50% 50% 0; transform:rotate(-45deg); background:var(--coral); box-shadow:0 6px 14px oklch(0.1 0.02 40 / 0.6); }
-.mapcard__pin .ring{ position:absolute; left:50%; top:50%; width:18px; height:18px; transform:translate(-50%,-50%); border-radius:50%; border:2px solid var(--coral); animation:ping 2.4s var(--ease) infinite; }
+.mapcard__map{ position:absolute; inset:0; z-index:0; width:100%; height:100%; background:var(--ink-2); }
+.mapcard::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:46%; z-index:1; pointer-events:none; background:linear-gradient(180deg, transparent, oklch(0.07 0.015 240 / 0.92)); }
+.leaflet-container{ background:var(--ink-2) !important; font-family:var(--font-mono); }
+.leaflet-control-zoom a{ background:oklch(0.18 0.02 50) !important; color:var(--paper) !important; border-color:var(--line) !important; }
+.leaflet-control-zoom a:hover{ background:oklch(0.24 0.03 50) !important; }
+.leaflet-control-attribution{ background:oklch(0.1 0.02 40 / 0.6) !important; color:var(--faint) !important; font-size:9px !important; }
+.leaflet-control-attribution a{ color:var(--muted) !important; }
+.map-pin__core{ position:absolute; left:50%; top:50%; width:15px; height:15px; transform:translate(-50%,-50%); border-radius:50%; background:var(--coral); box-shadow:0 0 0 3px oklch(0.72 0.185 39 / 0.35), 0 2px 10px oklch(0.05 0.01 40 / 0.8); }
+.map-pin__ring{ position:absolute; left:50%; top:50%; width:15px; height:15px; transform:translate(-50%,-50%); border-radius:50%; border:2px solid var(--coral); animation:ping 2.4s var(--ease) infinite; }
 @keyframes ping{ 0%{ transform:translate(-50%,-50%) scale(1); opacity:0.8;} 100%{ transform:translate(-50%,-50%) scale(4); opacity:0;} }
 .mapcard__label{ position:relative; z-index:2; }
 .mapcard__label .t{ font-family:var(--font-mono); font-size:0.66rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--sea); }
@@ -408,7 +413,7 @@ a{ color:inherit; text-decoration:none; }
 /* ---------------- scooters ---------------- */
 .scoot{ display:grid; grid-template-columns: 1fr 1fr; gap:clamp(1.4rem,4vw,3rem); align-items:center; padding:clamp(1.6rem,4vw,2.6rem); border:1px solid var(--line); border-radius:12px; background:linear-gradient(150deg, var(--ink-1), var(--ink)); }
 @media (max-width:760px){ .scoot{ grid-template-columns:1fr; } }
-.scoot__big{ font-family:var(--font-display); font-size:clamp(2rem,5vw,3.4rem); line-height:0.9; text-transform:uppercase; }
+.scoot__big{ font-family:var(--font-display); font-size:clamp(2rem,5vw,3.4rem); line-height:1.0; text-transform:uppercase; }
 .scoot ul{ margin-top:1.2rem; }
 .scoot li{ list-style:none; display:flex; gap:0.7rem; padding:0.55rem 0; color:var(--muted); font-size:0.96rem; }
 .scoot li b{ color:var(--coral); font-family:var(--font-mono); font-size:0.8rem; }
@@ -419,7 +424,7 @@ a{ color:inherit; text-decoration:none; }
 .note{ padding:clamp(1.4rem,3vw,2rem) clamp(1rem,2.5vw,1.6rem); border-bottom:1px solid var(--line); border-right:1px solid var(--line-2); transition:background .4s var(--ease); }
 .note:hover{ background:var(--ink-1); }
 .note .n{ font-family:var(--font-mono); font-size:0.7rem; color:var(--coral); letter-spacing:0.1em; }
-.note h4{ font-family:var(--font-display); font-size:1.5rem; text-transform:uppercase; margin:0.6rem 0; line-height:0.95; }
+.note h4{ font-family:var(--font-display); font-size:1.5rem; text-transform:uppercase; margin:0.6rem 0; line-height:1.02; }
 .note p{ color:var(--muted); font-size:0.92rem; }
 
 /* ---------------- crew ---------------- */
@@ -473,6 +478,28 @@ a{ color:inherit; text-decoration:none; }
 .outro__big{ position:relative; z-index:2; font-family:var(--font-display); font-size:clamp(4rem,18vw,15rem); line-height:0.82; text-transform:uppercase; text-align:center; }
 .outro__sub{ position:relative; z-index:2; text-align:center; margin-top:1.4rem; font-family:var(--font-mono); font-size:clamp(0.8rem,2vw,1rem); letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); }
 .outro__foot{ position:relative; z-index:2; margin-top:auto; padding:1.4rem var(--pad); display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.6rem; font-family:var(--font-mono); font-size:0.64rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--faint); border-top:1px solid var(--line-2); }
+
+/* ---------------- ratio / demografia donut ---------------- */
+.ratio{ display:grid; grid-template-columns:auto 1fr; gap:clamp(2rem,6vw,5rem); align-items:center; }
+.ratio__chart{ position:relative; width:min(72vw,300px); aspect-ratio:1; }
+.donut{ width:100%; height:100%; border-radius:50%;
+  background:conic-gradient(var(--coral) 0 70%, var(--sea) 70% 100%);
+  -webkit-mask:radial-gradient(circle, transparent 56%, #000 56.6%);
+  mask:radial-gradient(circle, transparent 56%, #000 56.6%);
+  filter:drop-shadow(0 24px 60px oklch(0.05 0.01 40 / 0.5)); }
+.donut__center{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.donut__center .num{ font-family:var(--font-display); font-size:clamp(2.8rem,8vw,4.6rem); line-height:1; color:var(--coral); }
+.donut__center small{ font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.24em; text-transform:uppercase; color:var(--muted); margin-top:0.35rem; }
+.ratio__legend{ margin-top:1.6rem; display:flex; flex-direction:column; gap:0.7rem; }
+.ratio__legend li{ list-style:none; display:flex; align-items:center; gap:0.7rem; font-size:1.02rem; color:var(--muted); }
+.ratio__legend li b{ color:var(--paper); font-family:var(--font-mono); margin-left:0.2rem; }
+.ratio__dot{ width:12px; height:12px; border-radius:50%; flex:none; }
+.ratio__src{ margin-top:1.4rem; font-family:var(--font-mono); font-size:0.66rem; color:var(--faint); letter-spacing:0.03em; max-width:44ch; line-height:1.6; }
+@media (max-width:760px){
+  .ratio{ grid-template-columns:1fr; justify-items:center; text-align:center; gap:2.4rem; }
+  .ratio__legend{ align-items:center; }
+  .ratio__src{ margin-inline:auto; }
+}
 
 /* ---------------- reveal defaults ---------------- */
 .reveal{ opacity:0; transform:translateY(34px); }
@@ -948,9 +975,8 @@ a{ color:inherit; text-decoration:none; }
       </div>
 
       <div>
-        <div class="mapcard reveal" data-tilt>
-          <img class="mapcard__photo" src="assets/img/bossa.jpg" alt="Playa d'en Bossa al tramonto" loading="lazy">
-          <div class="mapcard__pin"><div class="core"></div><div class="ring"></div></div>
+        <div class="mapcard reveal">
+          <div id="map" class="mapcard__map" role="img" aria-label="Mappa di Playa d'en Bossa con la posizione dell'appartamento"></div>
           <div class="mapcard__label">
             <div class="t">Basecamp · Playa d'en Bossa</div>
             <div class="a">6 posti letto · 2 bagni · 100 m dalla spiaggia, 1 km dai club.</div>
@@ -999,6 +1025,30 @@ a{ color:inherit; text-decoration:none; }
       <div class="note reveal"><span class="n">04</span><h4>Formentera</h4><p>Ferry dal porto, circa 30 minuti. Acqua caraibica e spiagge bianche per recuperare tra una notte e l'altra.</p></div>
       <div class="note reveal"><span class="n">05</span><h4>Ritmi</h4><p>I club aprono tardi, dalla mezzanotte alle 6. Si cena e si fa pre con calma: la notte è lunga.</p></div>
       <div class="note reveal"><span class="n">06</span><h4>Pratica</h4><p>Crema e acqua sempre, contanti più carta, casco ogni volta. Le serate costano: meglio fissare un budget.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- RATIO -->
+<section class="section" id="ratio">
+  <div class="wrap">
+    <div class="eyebrow-row reveal"><span class="kicker"><span class="dot">&#9733;</span> · Demografia dell'isola</span><span class="rule"></span></div>
+    <div class="ratio">
+      <div class="ratio__chart reveal">
+        <div class="donut" aria-hidden="true"></div>
+        <div class="donut__center">
+          <span class="num"><b data-count="70">0</b>%</span>
+          <small>donne</small>
+        </div>
+      </div>
+      <div class="ratio__txt">
+        <h2 class="dossier__big reveal">Le probabilità<br>sono dalla <em>nostra</em><br>parte.</h2>
+        <ul class="ratio__legend reveal">
+          <li><span class="ratio__dot" style="background:var(--coral)"></span> Donne <b>70%</b></li>
+          <li><span class="ratio__dot" style="background:var(--sea)"></span> Uomini <b>30%</b></li>
+        </ul>
+        <p class="ratio__src reveal">Fonte: stime altamente non scientifiche del reparto ricerche della crew. Risultati sul campo non garantiti.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -1103,6 +1153,7 @@ a{ color:inherit; text-decoration:none; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 (function () {
@@ -1315,6 +1366,23 @@ a{ color:inherit; text-decoration:none; }
       if (f && active) read(active, f);
       fileInput.value = "";
     });
+  })();
+
+  /* ---- REAL MAP (Leaflet + CARTO dark tiles, no key) ---- */
+  (function(){
+    var el = document.getElementById("map");
+    if (!el || typeof window.L === "undefined") return;
+    var LAT = 38.8925417, LON = 1.4088407;
+    try {
+      var map = L.map(el, { scrollWheelZoom:false, zoomControl:true, attributionControl:true }).setView([LAT, LON], 15);
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+        attribution:'&copy; OpenStreetMap, &copy; CARTO', subdomains:"abcd", maxZoom:19
+      }).addTo(map);
+      var icon = L.divIcon({ className:"map-pin", html:'<span class="map-pin__core"></span><span class="map-pin__ring"></span>', iconSize:[16,16], iconAnchor:[8,8] });
+      L.marker([LAT, LON], { icon:icon }).addTo(map).bindPopup("Playa d'en Bossa · Apartment 2");
+      setTimeout(function(){ map.invalidateSize(); }, 350);
+      window.addEventListener("load", function(){ map.invalidateSize(); });
+    } catch(e){ /* leave fallback background */ }
   })();
 
   /* ---- DOT NAV scroll-spy (IntersectionObserver, works without GSAP) ---- */

@@ -158,7 +158,7 @@ a{ color:inherit; text-decoration:none; }
 
 /* ---------------- hero ---------------- */
 .hero{ position:relative; min-height:100svh; display:flex; flex-direction:column; justify-content:flex-end; overflow:hidden; padding-bottom: clamp(2.5rem,6vw,4.5rem); }
-.hero__photo{ position:absolute; inset:0; z-index:0; width:100%; height:100%; object-fit:cover; object-position:center 35%; }
+.hero__photo{ position:absolute; inset:0; z-index:0; width:100%; height:100%; object-fit:cover; object-position:center 45%; }
 .hero__sky{
   position:absolute; inset:0; z-index:0;
   background:
@@ -318,7 +318,7 @@ a{ color:inherit; text-decoration:none; }
 .night__day b{ color:var(--c); }
 .night__club{ font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.26em; text-transform:uppercase; color:var(--paper); border:1px solid oklch(0.95 0.01 80 / 0.3); border-radius:99px; padding:0.3rem 0.8rem; }
 .night__mid{ margin-top:auto; }
-.night__venue{ font-family:var(--font-display); font-size:clamp(2.6rem,9vw,6.4rem); line-height:0.84; text-transform:uppercase; }
+.night__venue{ font-family:var(--font-display); font-size:clamp(2.6rem,9vw,6.4rem); line-height:0.98; text-transform:uppercase; margin-top:0.12em; }
 .night__artist{ font-family:var(--font-text); font-weight:700; font-size:clamp(1.3rem,3.6vw,2.2rem); margin-top:0.4rem; letter-spacing:-0.01em; }
 .night__party{ display:inline-block; font-family:var(--font-mono); font-size:0.74rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--c); margin-top:0.7rem; }
 .night__bottom{ margin-top:clamp(1.4rem,3vw,2.2rem); display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:1.4rem; }
@@ -642,7 +642,7 @@ a{ color:inherit; text-decoration:none; }
 
 <!-- HERO -->
 <header class="hero" id="top">
-  <img class="hero__photo" src="assets/img/esvedra.jpg" alt="Tramonto a Es Vedrà, Ibiza" aria-hidden="true">
+  <img class="hero__photo" src="assets/img/hero.jpg" alt="Ibiza vista dall'alto di notte" aria-hidden="true" onerror="this.onerror=null;this.src='assets/img/esvedra.jpg'">
   <div class="hero__sky" aria-hidden="true"></div>
   <div class="hero__sun" data-parallax="0.3" aria-hidden="true"></div>
   <div class="hero__sea" aria-hidden="true"></div>

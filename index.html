@@ -1648,19 +1648,11 @@ a{ color:inherit; text-decoration:none; }
         .showAtmosphere(true).atmosphereColor("#d98a66").atmosphereAltitude(0.18)
         .polygonsData(countries).polygonCapColor(() => "rgba(150,86,60,0.95)").polygonSideColor(() => "rgba(120,68,46,0.35)").polygonStrokeColor(() => "rgba(228,150,112,0.55)").polygonAltitude(0.01)
         .arcsData([{ startLat: PISA.lat, startLng: PISA.lng, endLat: IBIZA.lat, endLng: IBIZA.lng }])
-          .arcColor(() => ["rgba(244,186,150,0.95)", "rgba(217,138,102,0.95)"])
-          .arcStroke(0.7).arcAltitude(0.28).arcDashLength(0.5).arcDashGap(0.22).arcDashAnimateTime(2200)
-        .pointsData([PISA, IBIZA]).pointColor(() => "#f4ba96").pointAltitude(0.015).pointRadius(0.42).pointResolution(24)
-        .htmlElementsData([PISA, IBIZA]).htmlLat("lat").htmlLng("lng").htmlAltitude(0.008)
-          .htmlElement((d) => {
-            const w = document.createElement("div");
-            const t = document.createElement("span");
-            t.className = "globe-tag";
-            t.textContent = d.text;
-            t.style.transform = d.text === "PISA" ? "translate(-50%,-118%)" : "translate(-50%,18%)";
-            w.appendChild(t);
-            return w;
-          });
+          .arcColor(() => ["#fff1e6", "#f4ba96"])
+          .arcStroke(1.25).arcAltitude(0.3).arcDashLength(0.55).arcDashGap(0.16).arcDashAnimateTime(2200)
+        .pointsData([PISA, IBIZA]).pointColor(() => "#f4ba96").pointAltitude(0.012).pointRadius(0.55).pointResolution(24)
+        .labelsData([PISA, IBIZA]).labelLat("lat").labelLng("lng").labelText("text")
+          .labelColor(() => "#f7f0e7").labelSize(2).labelDotRadius(0).labelDotOrientation(() => "right").labelResolution(2).labelAltitude(0.013);
       try { const m = g.globeMaterial(); m.color.set("#15100b"); if (m.emissive) m.emissive.set("#1d140d"); m.shininess = 4; } catch (_) {}
       g.pointOfView({ lat: 41, lng: 5.9, altitude: 1.7 }, 0);
       const ctrl = g.controls();

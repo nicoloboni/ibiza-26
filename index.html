@@ -1651,13 +1651,13 @@ a{ color:inherit; text-decoration:none; }
           .arcColor(() => ["rgba(244,186,150,0.95)", "rgba(217,138,102,0.95)"])
           .arcStroke(0.7).arcAltitude(0.28).arcDashLength(0.5).arcDashGap(0.22).arcDashAnimateTime(2200)
         .pointsData([PISA, IBIZA]).pointColor(() => "#f4ba96").pointAltitude(0.015).pointRadius(0.42).pointResolution(24)
-        .htmlElementsData([PISA, IBIZA]).htmlLat("lat").htmlLng("lng").htmlAltitude(0.05)
+        .htmlElementsData([PISA, IBIZA]).htmlLat("lat").htmlLng("lng").htmlAltitude(0.008)
           .htmlElement((d) => {
             const w = document.createElement("div");
             const t = document.createElement("span");
             t.className = "globe-tag";
             t.textContent = d.text;
-            t.style.transform = d.text === "PISA" ? "translate(-50%,-190%)" : "translate(-50%,90%)";
+            t.style.transform = d.text === "PISA" ? "translate(-50%,-118%)" : "translate(-50%,18%)";
             w.appendChild(t);
             return w;
           });
